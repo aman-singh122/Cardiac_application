@@ -22,10 +22,10 @@ export const InviteModal = () => {
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isModalOpen = isOpen && type === "invite";
+  // const isModalOpen = isOpen && type === "invite";
   const { server } = data;
 
-  console.log("Invite modal open:", isModalOpen, type);
+  // console.log("Invite modal open:", isModalOpen, type);
   const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
 
   const onCopy = () => {
@@ -58,7 +58,7 @@ export const InviteModal = () => {
   };
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-black p-5 overflow-hidden ">
         <DialogHeader>
           <DialogTitle className="text-2xl text-center font-bold">
@@ -75,7 +75,7 @@ export const InviteModal = () => {
               disabled={isLoading}
               className="bg-zinc-100/50 border-zinc-300 focus-visible:ring-0 text-black focus-visible:ring-offset-0 flex-1"
               value={inviteUrl}
-            // readOnly
+            readOnly
             />
             <Button
               disabled={isLoading}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ServerWithMembersWithProfiles } from "@/types";
+import { ServerWithMembersWithProfiles } from "@/type";
 import { MemberRole } from "@prisma/client";
 import {
     DropdownMenu,
@@ -59,7 +59,7 @@ export const ServerHeader = ({
     </DropdownMenuItem >
 )}
 {isAdmin && (
-    <DropdownMenuItem  className="px-3 py-2 text-sm cursor-pointer">
+    <DropdownMenuItem  className="px-3 py-2 text-sm cursor-pointer" onSelect={() => onOpen("editServer", { server })}>
        server Settings
           <Settings className="h-4 w-4 ml-auto" />
     </DropdownMenuItem >
