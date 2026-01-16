@@ -24,9 +24,9 @@ import { ServerWithMembersWithProfiles } from "@/type";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserAvatar } from "@/components/user-avatar";
-import { 
-  Check, 
-  MoreVertical, 
+import {
+  Check,
+  MoreVertical,
   Shield,
   ShieldCheck,
   ShieldAlert,
@@ -55,21 +55,21 @@ export const MembersModal = () => {
   const { server } = data as { server: ServerWithMembersWithProfiles };
 
 
-    const onRoleChange = async (memberId: string, role: MemberRole) => {
-try {
-  setLoadingId(memberId);
-  const url = qs.stringifyUrl({
-    url: `/api/members/${memberId}`,
-    query: {
-      serverId: server?.id,
-    },
-  });
+  const onRoleChange = async (memberId: string, role: MemberRole) => {
+    try {
+      setLoadingId(memberId);
+      const url = qs.stringifyUrl({
+        url: `/api/members/${memberId}`,
+        query: {
+          serverId: server?.id,
+        },
+      });
 
-  const response = await axios.patch(url, {role});
+      const response = await axios.patch(url, { role });
 
-  router.refresh();
-  onOpen("members", {server: response.data})
-} catch (error) {
+      router.refresh();
+      onOpen("members", { server: response.data })
+    } catch (error) {
       console.error(error);
     } finally {
       setLoadingId("");
@@ -81,15 +81,15 @@ try {
     try {
       setLoadingId(memberId);
       const url = qs.stringifyUrl({
-    url: `/api/members/${memberId}`,
-    query: {
-      serverId: server?.id,
-    },
-  });
+        url: `/api/members/${memberId}`,
+        query: {
+          serverId: server?.id,
+        },
+      });
 
-  const response = await axios.delete(url);
-  router.refresh();
-  onOpen("members", {server:response.data});
+      const response = await axios.delete(url);
+      router.refresh();
+      onOpen("members", { server: response.data });
 
     } catch (error) {
       console.error(error);
@@ -161,22 +161,22 @@ try {
 
                         <DropdownMenuPortal>
                           <DropdownMenuSubContent>
-                            <DropdownMenuItem onClick={()=>onRoleChange(member.id, "GUEST")}>
-                              <Shield className="h-4 w-4 mr-2"/>
+                            <DropdownMenuItem onClick={() => onRoleChange(member.id, "GUEST")}>
+                              <Shield className="h-4 w-4 mr-2" />
                               Guest
                               {member.role === "GUEST" && (
                                 <Check className="h-4 w-4 ml-auto" />
                               )}
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={()=>onRoleChange(member.id, "MODERATOR")}>
-                              <ShieldCheck className="h-4 w-4 mr-2"/>
+                            <DropdownMenuItem onClick={() => onRoleChange(member.id, "MODERATOR")}>
+                              <ShieldCheck className="h-4 w-4 mr-2" />
                               Moderator
                               {member.role === "MODERATOR" && (
                                 <Check className="h-4 w-4 ml-auto" />
                               )}
                             </DropdownMenuItem>
-{/* 
+                            {/* 
                             <DropdownMenuItem>
                               <ShieldAlert className="h-4 w-4 mr-2"/>
                               Admin
@@ -188,8 +188,8 @@ try {
                         </DropdownMenuPortal>
                       </DropdownMenuSub>
                       <DropdownMenuSeparator>
-                        <DropdownMenuItem onClick={()=> onKick(member.id)}>
-                          <Gavel className="h-4 w-4 mr-2"/>
+                        <DropdownMenuItem onClick={() => onKick(member.id)}>
+                          <Gavel className="h-4 w-4 mr-2" />
                           Kick
                         </DropdownMenuItem>
                       </DropdownMenuSeparator>
@@ -206,4 +206,4 @@ try {
       </DialogContent>
     </Dialog>
   );
-};
+}
