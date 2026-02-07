@@ -96,7 +96,7 @@
 "use client";
 
 import { UploadDropzone } from "@/lib/uploadthing";
-import { X, FileText } from "lucide-react";
+import { X, FileIcon } from "lucide-react";
 import Image from "next/image";
 
 interface FileUploadProps {
@@ -105,15 +105,24 @@ interface FileUploadProps {
   endpoint: "messageFile" | "serverImage";
 }
 
+const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif"];
+
 export const FileUpload = ({
   onChange,
   value,
   endpoint,
 }: FileUploadProps) => {
-  const fileType = value?.split(".").pop()?.toLowerCase();
 
-  // IMAGE PREVIEW
-  if (value && fileType !== "pdf") {
+  const fileExtension = value
+    ?.split(".")
+    ?.pop()
+    ?.toLowerCase();
+
+  const isImage =
+    fileExtension && IMAGE_EXTENSIONS.includes(fileExtension);
+
+  /* IMAGE PREVIEW */
+  if (value && isImage) {
     return (
       <div className="flex justify-center">
         <div className="relative h-24 w-24">
@@ -123,10 +132,9 @@ export const FileUpload = ({
             alt="Upload"
             className="rounded-full object-cover"
           />
-
           <button
             onClick={() => onChange("")}
-            className="bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-2 shadow-md"
+            className="bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-2"
             type="button"
           >
             <X className="h-4 w-4" />
@@ -136,16 +144,24 @@ export const FileUpload = ({
     );
   }
 
-  // PDF PREVIEW
-  if (value && fileType === "pdf") {
+  /* PDF / FILE PREVIEW */
+  if (value && !isImage) {
     return (
-      <div className="relative flex items-center gap-2 border rounded-md p-2">
-        <FileText className="h-6 w-6 text-indigo-500" />
-        <span className="text-sm truncate">PDF Uploaded</span>
+      <div className="relative flex items-center gap-x-2 p-2 mt-2 rounded-md bg-background/10">
+        <FileIcon className="h-10 w-10 text-indigo-500" />
+
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-indigo-500 hover:underline break-all"
+        >
+          Open file
+        </a>
 
         <button
           onClick={() => onChange("")}
-          className="bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-2 shadow-sm"
+          className="bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-2"
           type="button"
         >
           <X className="h-4 w-4" />
@@ -154,21 +170,22 @@ export const FileUpload = ({
     );
   }
 
-  // UPLOAD UI
+  /* UPLOAD UI */
   return (
     <div className="flex justify-center w-full">
       <div className="w-[260px]">
         <UploadDropzone
           endpoint={endpoint}
           onClientUploadComplete={(res) => {
-            onChange(res?.[0]?.url); // IMPORTANT FIX
+            // ✅ uploadthing v9 safe
+            onChange(res?.[0]?.ufsUrl);
           }}
           onUploadError={(error) => {
             console.log("Upload error:", error);
           }}
           appearance={{
             container:
-              "border border-dashed rounded-lg p-6 text-center flex flex-col items-center justify-center gap-2",
+              "border border-dashed rounded-lg p-6 text-center flex flex-col items-center gap-2",
             label: "text-sm text-gray-600",
             uploadIcon: "w-10 h-10 text-gray-400",
             button:

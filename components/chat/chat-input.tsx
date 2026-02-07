@@ -81,7 +81,7 @@ try {
                   {/* ➕ button */}
                   <button
                     type="button"
-                    onClick={() => onOpen("messageFile")}
+                    onClick={() => onOpen("messageFile",{apiUrl,query})}
                     className="absolute top-7 left-8 h-[24px] w-[24px] 
                     bg-zinc-500 dark:bg-zinc-400 
                     hover:bg-zinc-600 dark:hover:bg-zinc-300 
