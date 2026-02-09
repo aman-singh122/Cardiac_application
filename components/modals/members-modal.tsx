@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription
 } from "@/components/ui/dialog";
 
 import {
@@ -21,7 +22,7 @@ import {
 
 import { useModal } from "@/hooks/use-modal-store";
 import { ServerWithMembersWithProfiles } from "@/type";
-import { DialogDescription } from "@radix-ui/react-dialog";
+// import { DialogDescription } from "@radix-ui/react-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserAvatar } from "@/components/user-avatar";
 import {
