@@ -6,20 +6,26 @@ import { redirect } from "next/navigation";
 const SetupPage = async () => {
   const profile = await initialProfile();
 
+  if (!profile) {
+    redirect("/sign-in");
+  }
+
   const server = await db.server.findFirst({
     where: {
       members: {
         some: {
-          profileId: profile.id
-        }
-      }
-    }
+          profileId: profile.id,
+        },
+      },
+    },
   });
 
   if (server) {
-    return redirect(`/servers/${server.id}`)
+    return redirect(`/servers/${server.id}`);
   }
-  return <InitialModal />
+
+  // 👇 THIS is what shows Create Server UI
+  return <InitialModal />;
 };
 
 export default SetupPage;
