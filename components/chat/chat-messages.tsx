@@ -1,17 +1,15 @@
 "use client";
 
-import React, { Fragment, useRef, ElementRef } from "react";
+import React, { Fragment, useRef, ElementRef, useMemo } from "react";
+import { format } from "date-fns";
 import { Member, Message, Profile } from "@prisma/client";
-import  {ChatWelcome} from "@/components/chat/chat-welcome";
-import { useChatQuery } from "@/hooks/use-chat-query";
 import { Loader2, ServerCrash } from "lucide-react";
-import { group } from "console";
-// import { format } from "date-fns";
-// import ChatWelcome from "./chat-welcome";
 
-// import { ChatItem } from "@/components/chat/chat-item";
-// import { useChatSocket } from "@/hooks/use-chat-socket";
-// import { useChatScroll } from "@/hooks/use-chat-scroll";
+import { ChatWelcome } from "@/components/chat/chat-welcome";
+import { ChatItem } from "./chat-item";
+import { useChatQuery } from "@/hooks/use-chat-query";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
+import { useChatSocket } from "@/hooks/use-chat-socket";
 
 interface ChatMessagesProps {
   name: string;
@@ -25,7 +23,7 @@ interface ChatMessagesProps {
   type: "channel" | "conversation";
 }
 
-type MessagesWithMemberWithProfile = Message & {
+type MessageWithMemberWithProfile = Message & {
   member: Member & {
     profile: Profile;
   };
@@ -42,121 +40,137 @@ export function ChatMessages({
   socketQuery,
   paramKey,
   paramValue,
-  type
+  type,
 }: ChatMessagesProps) {
-  const queryKey = `chat:${chatId}`;
-//   const addKey = `chat:${chatId}:messages`;
-//   const updateKey = `chat:${chatId}:messages:update`;
 
-//   const chatRef = useRef<ElementRef<"div">>(null);
-//   const bottomRef = useRef<ElementRef<"div">>(null);
+  const queryKey = `chat:${chatId}`;
+  const addKey = `chat:${chatId}:messages`;
+  const updateKey = `chat:${chatId}:messages:update`;
+
+  const chatRef = useRef<ElementRef<"div">>(null);
+  const bottomRef = useRef<ElementRef<"div">>(null);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
       queryKey,
       apiUrl,
       paramKey,
-      paramValue
+      paramValue,
     });
-//   useChatSocket({
-//     queryKey,
-//     addKey,
-//     updateKey
-//   });
-//   useChatScroll({
-//     chatRef,
-//     bottomRef,
-//     loadMore: fetchNextPage,
-//     shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
-//     count: data?.pages?.[0]?.items?.length ?? 0
-//   });
 
-    /* LOADING */
+  useChatSocket({
+    queryKey,
+    addKey,
+    updateKey,
+  });
+
+  const messageCount = useMemo(() => {
+    return (
+      data?.pages?.reduce((total, page) => total + page.items.length, 0) ?? 0
+    );
+  }, [data]);
+
+  useChatScroll({
+    chatRef,
+    bottomRef,
+    loadMore: fetchNextPage,
+    shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
+    count: messageCount,
+  });
+
   if (status === "pending") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
-        <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Loading messages...
-        </p>
+        <Loader2 className="h-7 w-7 text-zinc-400 animate-spin my-4" />
+        <p className="text-xs text-zinc-500">Loading messages...</p>
       </div>
     );
   }
 
-  if (status === "error")
+  if (status === "error") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
         <ServerCrash className="h-7 w-7 text-zinc-500 my-4" />
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Something went wrong!
-        </p>
+        <p className="text-xs text-zinc-500">Something went wrong!</p>
       </div>
     );
+  }
 
   return (
     <div
-      className="flex-1 flex flex-col py-4 overflow-y-auto"
-    //   ref={chatRef}
+      ref={chatRef}
+      className="
+        flex-1
+        flex
+        flex-col
+        px-8
+        py-10
+        overflow-y-auto
+        scroll-smooth
+        bg-gradient-to-b
+        from-zinc-900/30
+        via-zinc-900/50
+        to-zinc-950
+      "
     >
-      {/* {!hasNextPage && <div className="flex-1" />}
+      {!hasNextPage && <div className="flex-1" />}
       {!hasNextPage && <ChatWelcome name={name} type={type} />}
+
       {hasNextPage && (
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-6">
           {isFetchingNextPage ? (
-            <Loader2 className="h-6 w-6 text-zinc-500 animate-spin my-4" />
+            <Loader2 className="h-6 w-6 text-zinc-400 animate-spin" />
           ) : (
             <button
               onClick={() => fetchNextPage()}
-              className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition"
+              className="text-xs px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 transition"
             >
               Load previous messages
             </button>
           )}
         </div>
       )}
-      <div className="flex flex-col-reverse mt-auto">
-        {data?.pages.map((group, index) => (
+
+      <div className="flex flex-col-reverse mt-auto space-y-reverse space-y-4">
+        {data?.pages?.map((group, index) => (
           <Fragment key={index}>
-            {group?.items.map((message: MessagesWithMemberWithProfile) => (
-              <ChatItem
-                key={message.id}
-                currentMember={member}
-                member={message.member}
-                id={message.id}
-                content={message.content}
-                fileUrl={message.fileUrl}
-                deleted={message.deleted}
-                timestamp={format(
-                  new Date(message.createdAt),
-                  DATE_FORMAT
-                )}
-                isUpdated={message.updatedAt !== message.createdAt}
-                socketQuery={socketQuery}
-                socketUrl={socketUrl}
-              />
-            ))}
+            {group.items.map(
+              (message: MessageWithMemberWithProfile, i:number) => {
+
+                const previousMessage = group.items[i + 1];
+
+                const isGrouped =
+                  previousMessage &&
+                  previousMessage.member.id === message.member.id;
+
+                return (
+                  <ChatItem
+                    key={message.id}
+                    id={message.id}
+                    currentMember={member}
+                    member={message.member}
+                    content={message.content}
+                    fileUrl={message.fileUrl}
+                    deleted={message.deleted}
+                    timestamp={format(
+                      new Date(message.createdAt),
+                      DATE_FORMAT
+                    )}
+                    isUpdated={
+                      message.updatedAt !== message.createdAt
+                    }
+                    socketUrl={socketUrl}
+                    socketQuery={socketQuery}
+                    isGrouped={isGrouped}
+                  />
+                );
+              }
+            )}
           </Fragment>
         ))}
       </div>
-      <div ref={bottomRef} /> */}
-      <div className="mt-auto">
-<ChatWelcome
-type={type}
-name = {name}
-/>
-<div className="flex flex-col-reverse mt-auto">
-{data?.pages?.map((group,i)=> (
-    <Fragment key={i}>
-{group.items.map((message:MessagesWithMemberWithProfile)=> (
-    <div key={message.id}>
-        {message.content}
-    </div>
-))}
-    </Fragment>
-))}
-</div>
 
+      <div ref={bottomRef} />
     </div>
-</div>
   );
 }

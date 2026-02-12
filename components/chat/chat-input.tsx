@@ -1,128 +1,6 @@
-// "use client";
-
-// import React from "react";
-// import { useForm } from "react-hook-form";
-// import * as z from "zod";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useRouter } from "next/navigation";
-// import axios from "axios";
-// import qs from "query-string";
-
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-// } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
-// import { useModal } from "@/hooks/use-modal-store";
-// import { Plus, Smile } from "lucide-react";
-// import {EmojiPicker} from "@/components/emoji-picker";
-
-// interface ChatInputProps {
-//   apiUrl: string;
-//   query: Record<string, any>;
-//   name: string;
-//   type: "conversation" | "channel";
-// }
-
-// const formSchema = z.object({
-//   content: z.string().min(1, "Message cannot be empty"),
-// });
-
-// export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
-//   const { onOpen } = useModal();
-//   const router = useRouter();
-
-//   const form = useForm<z.infer<typeof formSchema>>({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: {
-//       content: "",
-//     },
-//   });
-
-//   const isLoading = form.formState.isSubmitting;
-
-//   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    
-//     console.log("✅ MESSAGE SUBMITTED:", values);
-    
-// try {
-//       const url = qs.stringifyUrl({
-//         url: apiUrl,
-//         query
-//       });
-
-//       await axios.post(url, values);
-
-//       form.reset();
-//       router.refresh();
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-//     // future use (API / socket)
-//     // await axios.post(...)
-//     // socket.emit(...)
-
-//   return (
-//     <Form {...form}>
-//       <form
-//         onSubmit={form.handleSubmit(onSubmit)}
-//         className="w-full"
-//       >
-//         <FormField
-//           control={form.control}
-//           name="content"
-//           render={({ field }) => (
-//             <FormItem>
-//               <FormControl>
-//                 <div className="relative p-4 pb-6">
-                  
-//                   {/* ➕ button */}
-//                   <button
-//                     type="button"
-//                     onClick={() => onOpen("messageFile",{apiUrl,query})}
-//                     className="absolute top-7 left-8 h-[24px] w-[24px] 
-//                     bg-zinc-500 dark:bg-zinc-400 
-//                     hover:bg-zinc-600 dark:hover:bg-zinc-300 
-//                     transition rounded-full p-1 flex items-center justify-center"
-//                   >
-//                     <Plus className="text-white dark:text-[#313338]" />
-//                   </button>
-
-//                   {/* 💬 input */}
-//                   <Input
-//                     disabled={isLoading}
-//                     placeholder={`Message ${
-//                       type === "conversation" ? name : "#" + name
-//                     }`}
-//                     className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 
-//                     border-none focus-visible:ring-0 
-//                     text-zinc-600 dark:text-zinc-200"
-//                     {...field}
-//                   />
-
-//                   {/* 😊 emoji icon */}
-//                   <div className="absolute top-7 right-8 text-zinc-500">
-//                     <EmojiPicker/>
-//                   </div>
-
-//                   {/* ✅ IMPORTANT: hidden submit button */}
-//                   <button type="submit" className="hidden" />
-//                 </div>
-//               </FormControl>
-//             </FormItem>
-//           )}
-//         />
-//       </form>
-//     </Form>
-//   );
-// }
-
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -130,26 +8,31 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import qs from "query-string";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useModal } from "@/hooks/use-modal-store";
 import { Plus } from "lucide-react";
 import { EmojiPicker } from "@/components/emoji-picker";
 
+/* ---------------- Schema ---------------- */
+
 const formSchema = z.object({
-  content: z.string().min(1),
+  content: z.string().optional(),
 });
 
-export function ChatInput({ apiUrl, query, name, type }: any) {
-  const { onOpen } = useModal();
+interface ChatInputProps {
+  apiUrl: string;
+  query: Record<string, any>;
+  name: string;
+  type: "conversation" | "channel";
+}
+
+export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
   const router = useRouter();
+  const { onOpen } = useModal();
 
   const [isMounted, setIsMounted] = useState(false);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -157,16 +40,27 @@ export function ChatInput({ apiUrl, query, name, type }: any) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { content: "" },
+    defaultValues: {
+      content: "",
+    },
   });
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({ url: apiUrl, query });
-      await axios.post(url, values);
+      const url = qs.stringifyUrl({
+        url: apiUrl,
+        query,
+      });
+
+      await axios.post(url, {
+        content: values.content || "",
+        fileUrl,
+      });
+
       form.reset();
+      setFileUrl(null);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -174,50 +68,75 @@ export function ChatInput({ apiUrl, query, name, type }: any) {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <div className="relative p-4 pb-6">
-
-                  <button
-                    type="button"
-                    onClick={() => onOpen("messageFile", { apiUrl, query })}
-                    className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 rounded-full"
+    <div className="px-6 py-6 bg-gradient-to-t from-black/40 via-black/20 to-transparent">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div
+                    className="
+                    relative flex items-center 
+                    bg-white/10 dark:bg-white/5 
+                    backdrop-blur-xl 
+                    rounded-2xl 
+                    px-5 py-4 
+                    shadow-xl 
+                    border border-white/10 
+                    transition-all 
+                    focus-within:ring-2 focus-within:ring-indigo-500
+                  "
                   >
-                    <Plus className="text-white" />
-                  </button>
+                    {/* ➕ Upload */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onOpen("messageFile", {
+                          apiUrl,
+                          query,
+                        })
+                      }
+                      className="mr-4 flex items-center justify-center text-zinc-400 hover:text-indigo-400 transition"
+                    >
+                      <Plus className="h-5 w-5" />
+                    </button>
 
-                  <Input
-                    disabled={isLoading}
-                    placeholder={`Message ${
-                      type === "conversation" ? name : "#" + name
-                    }`}
-                    className="px-14 py-6"
-                    {...field}
-                  />
+                    {/* 💬 Input */}
+                    <Input
+                      variant="ghost"
+                      disabled={isLoading}
+                      {...field}
+                      placeholder={`Message ${
+                        type === "conversation" ? name : "#" + name
+                      }`}
+                      className="flex-1 text-sm placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                    />
 
-                  <div className="absolute top-7 right-8">
-                    {isMounted && (
-                      <EmojiPicker
-                        onChange={(emoji) =>
-                          form.setValue("content", field.value + emoji)
-                        }
-                      />
-                    )}
+                    {/* 😊 Emoji */}
+                    <div className="ml-4">
+                      {isMounted && (
+                        <EmojiPicker
+                          onChange={(emoji) =>
+                            form.setValue(
+                              "content",
+                              (field.value || "") + emoji,
+                            )
+                          }
+                        />
+                      )}
+                    </div>
+
+                    <button type="submit" className="hidden" />
                   </div>
-
-                  <button type="submit" className="hidden" />
-                </div>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </div>
   );
 }

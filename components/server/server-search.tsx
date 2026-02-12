@@ -1,115 +1,3 @@
-// "use client"
-
-// import { Hash, Search, User } from "lucide-react";
-// import { useEffect, useState } from "react";
-// import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-// import { useRouter, useParams } from "next/navigation";
-
-
-// interface ServerSearchProps {
-//   data: {
-//     label: string;
-//     type: "channel" | "member";
-//     data: {
-//       icon: React.ReactNode;
-//       name: string;
-//       id: string;
-//     }[] | undefined;
-//   }[];
-// }
-
-// export const ServerSearch = ({
-//   data
-// }: ServerSearchProps) => {
-//   const [open, setOpen] = useState(false);
-//   const router = useRouter();
-//   const params = useParams();
-
-  
-//   useEffect(() => {
-//     const down = (e: KeyboardEvent) => {
-//       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-//         e.preventDefault();
-//         setOpen((open) => !open);
-//       }
-//     };
-
-//     document.addEventListener("keydown", down);
-//     return () => document.removeEventListener("keydown", down);
-//   }, []);
-
-
-
-
-
-//   const onClick = ({ id, type }: { id: string; type: "channel" | "member" }) => {
-//     setOpen(false);
-
-//     if (type === "member") {
-//      return router.push(`/servers/${params?.serverId}/conversations/${id}`);
-//     }
-
-//     if (type === "channel") {
-//      return router.push(`/servers/${params?.serverId}/channels/${id}`);
-//     }
-//   };
-
-//   const getIcon = (type: "channel" | "member") => {
-//     if (type === "channel") {
-//       return <Hash className="mr-2 h-4 w-4" />;
-//     }
-//     return <User className="mr-2 h-4 w-4" />;
-//   }
-
-
-
-
-//     return ( 
-//         <>
-//      <button className="group w-full px-2 py-2 rounded-md flex items-center gap-x-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition cursor-pointer"   onClick={() => setOpen(true)}>
-//      <Search className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-//              <p className="font-semibold text-sm text-zinc-500 dark:text-zinc-400 
-//                       group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
-//           Search
-//         </p>
-//         <kbd className="pointer-events-none inline-flex h-5 select-none items-center 
-//                        gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] 
-//                        font-medium text-muted-foreground ml-auto">
-//           <span className="text-xs">CTRL+</span>K
-//         </kbd>
-//         </button>
-
-
-//         <CommandDialog open={open} onOpenChange={setOpen}>
-//         <CommandInput placeholder="Search all channels and members" />
-//         <CommandList>
-//           <CommandEmpty>No Results found</CommandEmpty>
-//           {data.map(({ label, type, data }) => {
-//             if (!data?.length) return null;
-
-//             return (
-//               <CommandGroup key={label} heading={label}>
-//                 {data?.map(({ id, icon, name }) => (
-//                   <CommandItem
-//                     key={id}
-//                     onSelect={() => onClick({ id, type })}
-//                     className="cursor-pointer"
-//                   >
-//                     <div className="flex items-center">
-//                       {icon || getIcon(type)}
-//                       <span>{name}</span>
-//                     </div>
-//                   </CommandItem>
-//                 ))}
-//               </CommandGroup>
-//             );
-//           })}
-//         </CommandList>
-//       </CommandDialog>
-//     </>
-//      );
-// }
-
 "use client";
 
 import { Hash, Search, User } from "lucide-react";
@@ -125,7 +13,6 @@ import {
 import { useRouter, useParams } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
-// import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 
 interface ServerSearchProps {
   data: {
@@ -160,46 +47,66 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
     setOpen(false);
 
     if (type === "member") {
-      return router.push(`/servers/${params?.serverId}/conversations/${id}`);
+      router.push(`/servers/${params?.serverId}/conversations/${id}`);
     }
 
     if (type === "channel") {
-      return router.push(`/servers/${params?.serverId}/channels/${id}`);
+      router.push(`/servers/${params?.serverId}/channels/${id}`);
     }
   };
 
   const getIcon = (type: "channel" | "member") => {
-    if (type === "channel") {
-      return <Hash className="mr-2 h-4 w-4" />;
-    }
-    return <User className="mr-2 h-4 w-4" />;
+    return type === "channel"
+      ? <Hash className="h-4 w-4" />
+      : <User className="h-4 w-4" />;
   };
 
   return (
     <>
-      <button
-        className="group w-full px-2 py-2 rounded-md flex items-center gap-x-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition cursor-pointer"
-        onClick={() => setOpen(true)}
-      >
-        <Search className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-      <p
-  className="font-semibold text-sm text-zinc-500 dark:text-zinc-400 
-             group-hover:text-white dark:group-hover:text-white transition"
+      {/* Search Trigger */}
+   <button
+  onClick={() => setOpen(true)}
+  className="
+    group w-full
+    flex items-center gap-3
+    px-4 py-3
+    rounded-xl
+    bg-[#151c2b]
+    hover:bg-[#1c2436]
+    border border-white/5
+    transition-all duration-200
+  "
 >
-  Search
-</p>
+  <Search className="w-4 h-4 text-zinc-400" />
+  <span className="text-sm text-zinc-400">
+    Search channels or members
+  </span>
+  <kbd className="
+    ml-auto px-2 py-0.5
+    text-[10px]
+    rounded-md
+    bg-black/40
+    text-zinc-400
+    border border-white/10
+    font-mono
+  ">
+    Ctrl + K
+  </kbd>
+</button>
 
-        <kbd
-          className="pointer-events-none inline-flex h-5 select-none items-center 
-                       gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] 
-                       font-medium text-muted-foreground ml-auto"
-        >
-          <span className="text-xs">CTRL+</span>K
-        </kbd>
-      </button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        {/* Accessibility fix */}
+      {/* Command Dialog */}
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+     className="
+  bg-[#111827]
+  border border-white/10
+  rounded-2xl
+  shadow-[0_30px_80px_rgba(0,0,0,0.6)]
+"
+
+      >
         <VisuallyHidden>
           <DialogTitle>Search</DialogTitle>
         </VisuallyHidden>
@@ -210,24 +117,65 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
           </DialogDescription>
         </VisuallyHidden>
 
-        <CommandInput placeholder="Search all channels and members" />
-        <CommandList>
-          <CommandEmpty>No Results found</CommandEmpty>
+        <div className="px-4 pt-4 pb-2">
+          <CommandInput
+            placeholder="Type to search..."
+            className="
+              bg-background
+              border border-border
+              rounded-lg
+              px-4 py-3
+              text-sm
+              placeholder:text-muted-foreground
+              focus:outline-none
+              focus:ring-2
+              focus:ring-primary/40
+            "
+          />
+        </div>
+
+        <CommandList className="max-h-[380px] overflow-y-auto px-2 pb-3">
+
+          <CommandEmpty className="py-8 text-center text-muted-foreground text-sm">
+            No results found.
+          </CommandEmpty>
+
           {data.map(({ label, type, data }) => {
             if (!data?.length) return null;
 
             return (
-              <CommandGroup key={label} heading={label}>
-                {data?.map(({ id, icon, name }) => (
+              <CommandGroup
+                key={label}
+                heading={label}
+                className="
+                  text-[10px]
+                  uppercase
+                  tracking-widest
+                  text-muted-foreground
+                  px-3 pt-4 pb-2
+                "
+              >
+                {data.map(({ id, icon, name }) => (
                   <CommandItem
                     key={id}
                     onSelect={() => onClick({ id, type })}
-                    className="cursor-pointer"
+                    className="
+                      flex items-center gap-3
+                      px-4 py-2.5
+                      rounded-lg
+                      cursor-pointer
+                      transition-all duration-150
+                      hover:bg-accent
+                      data-[selected=true]:bg-primary/20
+                    "
                   >
-                    <div className="flex items-center">
+                    <div className="text-muted-foreground">
                       {icon || getIcon(type)}
-                      <span>{name}</span>
                     </div>
+
+                    <span className="text-sm text-foreground">
+                      {name}
+                    </span>
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -238,5 +186,3 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
     </>
   );
 };
-
- 

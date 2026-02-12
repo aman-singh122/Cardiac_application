@@ -1,7 +1,8 @@
-import { Hash} from "lucide-react";
+import { Hash } from "lucide-react";
 import { MobbileToggle } from "@/components/mobile-toggle";
 import { UserAvatar } from "@/components/user-avatar";
 import { SocketIndicatior } from "@/components/socket-indicator";
+import { ChatVideoButton } from "./chat-video-button";
 
 interface ChatHeaderProps {
   serverId: string;
@@ -14,32 +15,42 @@ export const ChatHeader = ({
   serverId,
   name,
   type,
-  imageUrl
+  imageUrl,
 }: ChatHeaderProps) => {
   return (
-      <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
-         {/* Mobile Toggle for Sidebar */}
-      <MobbileToggle 
-      serverId={serverId}
-       />
+    <div
+      className="
+        flex items-center
+        h-16
+        px-8
+        bg-gradient-to-b
+       from-zinc-900/70
+via-zinc-900/50
+        to-transparent
+        backdrop-blur-md
+        border-b border-white/10
+      "
+    >
+      {/* LEFT */}
+      <div className="flex items-center gap-3">
+        <MobbileToggle serverId={serverId} />
 
-     {type === "channel" && (
-          <Hash className="w-5 h-5 text-zinc-500 dark:text-zinc-400 mr-2" />
+        {type === "channel" && <Hash className="w-5 h-5 text-zinc-400" />}
+
+        {type === "conversation" && (
+          <UserAvatar src={imageUrl} className="h-9 w-9 rounded-full" />
         )}
-      {type === "conversation" && (
-        <UserAvatar 
-        src={imageUrl} 
-        className="h-8 w-8 md:h-8 md:w-8 mr-2"/>
-      )}
 
-           <p className="font-semibold text-md text-black dark:text-white">
-             {name}
-           </p>
+        <p className="font-semibold text-lg tracking-tight text-white">
+          {name}
+        </p>
+      </div>
 
-           <div className="ml-auto flex items-center">
-            <SocketIndicatior/>
-           </div>
-
+      {/* RIGHT */}
+      <div className="ml-auto flex items-center gap-4">
+        {type === "conversation" && <ChatVideoButton />}
+        <SocketIndicatior />
+      </div>
     </div>
   );
 };

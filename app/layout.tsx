@@ -14,8 +14,8 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Team chat Application",
-  description: "My Next.js App with Open Sans",
+  title: "CardiaC",
+  description: "Premium Discord Style UI",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
       <body
         className={cn(
           openSans.className,
-          "bg-white dark:bg-[#313338]"
+          "bg-[#0b0f17] text-zinc-200 antialiased"
         )}
       >
         <ClerkProvider>
@@ -36,13 +36,10 @@ export default function RootLayout({
             attribute="class"
             defaultTheme="dark"
             enableSystem={false}
-            storageKey="discord-theme"
           >
             <SocketProvider>
-            <ModalProvider />
-            <QueryProvider>
-            {children}
-            </QueryProvider>
+              <ModalProvider />
+              <QueryProvider>{children}</QueryProvider>
             </SocketProvider>
           </ThemeProvider>
         </ClerkProvider>

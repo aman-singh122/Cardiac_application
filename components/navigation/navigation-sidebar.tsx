@@ -26,39 +26,56 @@ export const NavigationSidebar = async () => {
     }
   });
 
-  return (
-    <div
-      className="space-y-4 flex flex-col items-center
-    h-full text-primary w-full dark:bg-[#1E1F22] bg-[#E3E5E8] py-3"
-    >
+return (
+  <div
+    className="
+      flex flex-col items-center
+      h-full
+      w-[72px]
+      py-4
+      bg-[#0b0d12]
+      border-r border-white/5
+      shadow-xl
+    "
+  >
+    {/* Create / Home Button */}
+    <div className="mb-4 flex items-center justify-center w-full">
       <NavigationAction />
-      <Separator className="h-0.5 bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto" />
-      <ScrollArea
-        className="flex-1 w-full">
-        {servers.map((server) => (
-          <div key={server.id} className="mb-4">
-            <NavigationItem
-              id={server.id}
-              name={server.name}
-              imageUrl={server.imageUrl}
-            />
-          </div>
-        ))}
-      </ScrollArea>
-
-      <div className="pb-3 mt-auto flex items-center flex-col gap-y-4">
-        <ModeToggle />
-        <UserButton afterSignOutUrl="/sign-in"
-          appearance={{
-            elements: {
-              avatarBox: "h-[48px] w-[48px]"
-            }
-          }}
-        />
-      </div>
-
-
-
     </div>
-  )
+
+    {/* Subtle Divider */}
+    <div className="w-8 h-px bg-white/10 rounded-full mb-4" />
+
+    {/* Servers List */}
+    <ScrollArea className="flex-1 w-full">
+      <div className="flex flex-col items-center gap-y-3 py-1">
+        {servers.map((server) => (
+          <NavigationItem
+            key={server.id}
+            id={server.id}
+            name={server.name}
+            imageUrl={server.imageUrl}
+          />
+        ))}
+      </div>
+    </ScrollArea>
+
+    {/* Bottom Section */}
+    <div className="mt-auto pt-4 flex flex-col items-center gap-y-4 w-full">
+      <ModeToggle />
+
+      <UserButton
+        afterSignOutUrl="/sign-in"
+        appearance={{
+          elements: {
+            avatarBox:
+              "h-[44px] w-[44px] rounded-full ring-1 ring-white/10 hover:ring-white/20 transition"
+          }
+        }}
+      />
+    </div>
+  </div>
+);
+
+
 }

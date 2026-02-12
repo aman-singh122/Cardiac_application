@@ -21,35 +21,63 @@ export const ServerSection = ({
   channelType,
   server,
 }: ServerSectionProps) => {
+  const { onOpen } = useModal();
 
-const { onOpen } = useModal();
-
-  return <div className="flex items-center justify-between py-2">
-
-    <p className="text-xs uppercase font-semibold text-zinc-500 dark:text-zinc-400">
+  return (
+    <div className="flex items-center justify-between px-2 py-2 group">
+      {/* Section Label */}
+      <p
+        className="
+  p-1.5
+  rounded-md
+  text-zinc-500
+  hover:text-white
+  hover:bg-[#1c2436]
+  transition
+"
+      >
         {label}
-    </p>
+      </p>
 
-{role !== MemberRole.GUEST && sectionType === "channels" && (
-  <ActionTooltip label="Create Channel" side="top">
-    <button
-      className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
-      onClick={()=>onOpen("createChannel",{channelType})}
-    >
-      <Plus className="h-4 w-4" />
-    </button>
-  </ActionTooltip>
-)}
+      {/* Create Channel */}
+      {role !== MemberRole.GUEST && sectionType === "channels" && (
+        <ActionTooltip label="Create Channel" side="top">
+          <button
+            onClick={() => onOpen("createChannel", { channelType })}
+            className="
+              p-1.5
+              rounded-md
+              text-muted-foreground
+              hover:text-foreground
+              hover:bg-accent
+              transition
+              cursor-pointer
+            "
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </ActionTooltip>
+      )}
 
-{role === MemberRole.ADMIN && sectionType === "members" && (
-    <ActionTooltip label="Manage Members" side="top">
-    <button
-      className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
-      onClick={()=>onOpen("members", {server})}
-    >
-      <Settings className="h-4 w-4" />
-    </button>
-  </ActionTooltip>
-)}
-    </div>;
+      {/* Manage Members */}
+      {role === MemberRole.ADMIN && sectionType === "members" && (
+        <ActionTooltip label="Manage Members" side="top">
+          <button
+            onClick={() => onOpen("members", { server })}
+            className="
+              p-1.5
+              rounded-md
+              text-muted-foreground
+              hover:text-foreground
+              hover:bg-accent
+              transition
+              cursor-pointer
+            "
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+        </ActionTooltip>
+      )}
+    </div>
+  );
 };

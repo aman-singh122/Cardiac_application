@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-
 import { cn } from "@/lib/utils";
 import { ActionTooltip } from "@/components/action-tooltip";
 
@@ -10,46 +9,55 @@ interface NavigationItemProps {
   id: string;
   imageUrl: string;
   name: string;
-};
+}
 
 export const NavigationItem = ({
   id,
   imageUrl,
-  name
+  name,
 }: NavigationItemProps) => {
-
   const params = useParams();
   const router = useRouter();
 
+  const isActive = params?.serverId === id;
+
   const onClick = () => {
-    router.push(`/servers/${id}`)
-  }
+    router.push(`/servers/${id}`);
+  };
 
   return (
-    <ActionTooltip
-      side="right"
-      align="center"
-      label={name}
-    >
+    <ActionTooltip side="right" align="center" label={name}>
       <button
         onClick={onClick}
-        className="group relative flex items-center"
+        className="group relative flex items-center justify-center w-full cursor-pointer"
       >
-        <div className={cn(
-          "absolute left-0 bg-primary rounded-r-full transition-all w-1",
-          params?.serverId !== id && "group-hover:h-[20px]:",
-          params?.serverId === id ? "h-9" : "h-2"
-        )} />
-        {/* </div> */}
+        {/* Left Active Indicator */}
+        <span
+          className={cn(
+            "absolute left-0 w-1 bg-white rounded-r-full transition-all duration-200",
+            isActive
+              ? "h-10"
+              : "h-2 group-hover:h-6"
+          )}
+        />
 
-        <div className={cn(
-          "relative group flex mx-3 h-12 w-12 rounded-[24px] group-hover:rounded-3xl transition-all overflow-hidden",
-          params?.serverId === id && "bg-primary/10 text-primary rounded-3xl"
-        )}>
-
-          <Image fill src={imageUrl} alt="Channel" />
+        {/* Server Icon */}
+        <div
+          className={cn(
+            "relative h-12 w-12 rounded-full overflow-hidden transition-all duration-200 ease-out",
+            "group-hover:rounded-2xl group-hover:scale-105",
+            isActive &&
+              "rounded-2xl scale-105 ring-2 ring-white/20"
+          )}
+        >
+          <Image
+            src={imageUrl}
+            alt={name}
+            fill
+            className="object-cover"
+          />
         </div>
       </button>
     </ActionTooltip>
-  )
-}
+  );
+};

@@ -5,7 +5,4 @@ export const runtime = "nodejs";
 
 export const { GET, POST } = createRouteHandler({
   router: ourFileRouter,
-  config: {
-    awaitServerData: false, // 🔥 THIS FIX
-  },
 });

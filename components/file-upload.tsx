@@ -171,31 +171,33 @@ export const FileUpload = ({
   }
 
   /* UPLOAD UI */
-  return (
-    <div className="flex justify-center w-full">
-      <div className="w-[260px]">
-        <UploadDropzone
-          endpoint={endpoint}
-          onClientUploadComplete={(res) => {
-            // ✅ uploadthing v9 safe
-            onChange(res?.[0]?.ufsUrl);
-          }}
-          onUploadError={(error) => {
-            console.log("Upload error:", error);
-          }}
-          appearance={{
-            container:
-              "border border-dashed rounded-lg p-6 text-center flex flex-col items-center gap-2",
-            label: "text-sm text-gray-600",
-            uploadIcon: "w-10 h-10 text-gray-400",
-            button:
-              "bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600",
-          }}
-          content={{
-            label: "Choose a file or drag and drop",
-          }}
-        />
-      </div>
+ return (
+  <div className="flex justify-center w-full">
+    <div className="w-[260px]">
+      <UploadDropzone
+        endpoint={endpoint}
+        onUploadComplete={(res) => {
+          if (res && res.length > 0) {
+            onChange(res[0].url);
+          }
+        }}
+        onUploadError={(error) => {
+          console.log("Upload error:", error);
+        }}
+        appearance={{
+          container:
+            "border border-dashed rounded-lg p-6 text-center flex flex-col items-center gap-2",
+          label: "text-sm text-gray-600",
+          uploadIcon: "w-10 h-10 text-gray-400",
+          button:
+            "bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600",
+        }}
+        content={{
+          label: "Choose a file or drag and drop",
+        }}
+      />
     </div>
-  );
+  </div>
+);
+
 };

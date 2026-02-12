@@ -69,3 +69,58 @@ export async function GET(req: Request) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const profile = await currentProfile();
+    const { content, channelId, fileUrl } = await req.json();
+
+    if (!profile) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!channelId) {
+      return new NextResponse("Channel ID Missing", { status: 400 });
+    }
+
+    const member = await db.member.findFirst({
+      where: {
+        profileId: profile.id,
+        server: {
+          channels: {
+            some: {
+              id: channelId,
+            },
+          },
+        },
+      },
+    });
+
+    if (!member) {
+      return new NextResponse("Member not found", { status: 404 });
+    }
+
+    const message = await db.message.create({
+      data: {
+        content: content || "",
+        channelId,
+        memberId: member.id,
+        fileUrl: fileUrl || null, // ⭐ IMPORTANT
+      },
+      include: {
+        member: {
+          include: {
+            profile: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(message);
+  } catch (error) {
+    console.error("[MESSAGES_POST]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
+

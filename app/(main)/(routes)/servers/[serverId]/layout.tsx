@@ -35,15 +35,21 @@ const ServerIdLayout = async ({
   }
 
   return (
-    <div className="h-full">
-      <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
-        <ServerSidebar serverId={serverId} />
-      </div>
-      <main className="h-full md:pl-60">
-        {children}
-      </main>
+  <div className="h-full bg-background text-foreground">
+    
+    {/* Sidebar */}
+    <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0 border-r border-border bg-background">
+      <ServerSidebar serverId={serverId} />
     </div>
-  );
+
+    {/* Main Content */}
+    <main className="h-full md:pl-60 bg-card">
+      {children}
+    </main>
+
+  </div>
+);
+
 };
 
 export default ServerIdLayout;

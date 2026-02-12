@@ -25,63 +25,72 @@ export const ServerChannel = ({
   role,
 }: ServerChannelProps) => {
   const params = useParams();
-  const router  = useRouter();
+  const router = useRouter();
+  const { onOpen } = useModal();
+
   const Icon = iconMap[channel.type];
   const isActive = params?.channelId === channel.id;
-  const {onOpen} = useModal();
 
-const onClick = () => {
-  router.push(`/servers/${params?.serverId}/channels/${channel.id}`)
-}
+  const onClick = () => {
+    router.push(`/servers/${params?.serverId}/channels/${channel.id}`);
+  };
 
-const onAction = (e: React.MouseEvent, action: ModalType) => {
-  e.stopPropagation();
-  onOpen(action, { channel, server });
-}
-
+  const onAction = (e: React.MouseEvent, action: ModalType) => {
+    e.stopPropagation();
+    onOpen(action, { channel, server });
+  };
 
   return (
-    <button onClick={onClick}
+    <button
+      onClick={onClick}
       className={cn(
-        "group px-2 py-2 rounded-md flex items-center gap-x-2 w-full transition mb-1 text-left",
-        "hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50",
-        isActive && "bg-zinc-700/20 dark:bg-zinc-700"
+        "group relative flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 text-left",
+        "hover:bg-[#1a2233]",
+        isActive && "bg-[#1f2937]"
       )}
     >
+      {/* Icon */}
       <Icon
         className={cn(
-          "shrink-0 w-5 h-5 transition",
-          "text-zinc-500 dark:text-zinc-400",
-          "group-hover:text-zinc-700 dark:group-hover:text-zinc-200"
+          "w-4 h-4 shrink-0 transition-colors",
+          "text-zinc-500 group-hover:text-zinc-300",
+          isActive && "text-white"
         )}
       />
 
-      <p
+      {/* Name */}
+      <span
         className={cn(
-          "line-clamp-1 font-semibold text-sm transition cursor-pointer",
-          "text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300",
-          isActive && "text-primary dark:text-white"
+          "text-sm font-medium truncate transition-colors",
+          "text-zinc-400 group-hover:text-zinc-200",
+          isActive && "text-white"
         )}
       >
         {channel.name}
-      </p>
+      </span>
 
-      {/* EDIT + DELETE */}
+      {/* Actions */}
       {channel.name !== "general" && role !== MemberRole.GUEST && (
-        <div className="ml-auto flex items-center gap-x-2 opacity-0 group-hover:opacity-100 transition">
+        <div className="ml-auto flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <ActionTooltip label="Edit">
-            <Edit className="w-4 h-4 cursor-pointer text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition"   onClick={(e) => onAction(e,"editChannel")} />
+            <Edit
+              className="w-4 h-4 text-zinc-500 hover:text-white transition cursor-pointer"
+              onClick={(e) => onAction(e, "editChannel")}
+            />
           </ActionTooltip>
 
           <ActionTooltip label="Delete">
-            <Trash className="w-4 h-4 cursor-pointer text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 transition" onClick={(e)=>onAction(e,"deleteChannel")} />
+            <Trash
+              className="w-4 h-4 text-zinc-500 hover:text-rose-500 transition cursor-pointer"
+              onClick={(e) => onAction(e, "deleteChannel")}
+            />
           </ActionTooltip>
         </div>
       )}
 
-      {/* LOCK ICON */}
+      {/* Lock */}
       {channel.name === "general" && (
-        <Lock className="ml-auto w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+        <Lock className="ml-auto w-4 h-4 text-zinc-500" />
       )}
     </button>
   );
