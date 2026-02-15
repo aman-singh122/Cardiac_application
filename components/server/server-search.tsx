@@ -18,11 +18,13 @@ interface ServerSearchProps {
   data: {
     label: string;
     type: "channel" | "member";
-    data: {
-      icon: React.ReactNode;
-      name: string;
-      id: string;
-    }[] | undefined;
+    data:
+      | {
+          icon: React.ReactNode;
+          name: string;
+          id: string;
+        }[]
+      | undefined;
   }[];
 }
 
@@ -43,7 +45,13 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  const onClick = ({ id, type }: { id: string; type: "channel" | "member" }) => {
+  const onClick = ({
+    id,
+    type,
+  }: {
+    id: string;
+    type: "channel" | "member";
+  }) => {
     setOpen(false);
 
     if (type === "member") {
@@ -56,56 +64,60 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
   };
 
   const getIcon = (type: "channel" | "member") => {
-    return type === "channel"
-      ? <Hash className="h-4 w-4" />
-      : <User className="h-4 w-4" />;
+    return type === "channel" ? (
+      <Hash className="h-4 w-4" />
+    ) : (
+      <User className="h-4 w-4" />
+    );
   };
 
   return (
     <>
       {/* Search Trigger */}
-   <button
-  onClick={() => setOpen(true)}
-  className="
-    group w-full
-    flex items-center gap-3
-    px-4 py-3
-    rounded-xl
-    bg-[#151c2b]
-    hover:bg-[#1c2436]
-    border border-white/5
-    transition-all duration-200
-  "
->
-  <Search className="w-4 h-4 text-zinc-400" />
-  <span className="text-sm text-zinc-400">
-    Search channels or members
-  </span>
-  <kbd className="
+      <button
+        onClick={() => setOpen(true)}
+        className="
+  group w-full
+  flex items-center gap-3
+  px-4 py-3
+  rounded-xl
+  bg-card
+  hover:bg-muted
+  border border-border
+  transition-all duration-200
+"
+      >
+        <Search className="w-4 h-4 text-muted-foreground" />
+        <span className="text-sm text-muted-foreground">
+          Search channels or members
+        </span>
+        <kbd
+          className="
     ml-auto px-2 py-0.5
     text-[10px]
     rounded-md
-    bg-black/40
-    text-zinc-400
-    border border-white/10
-    font-mono
-  ">
-    Ctrl + K
-  </kbd>
-</button>
+  bg-muted
+text-muted-foreground
+border border-border
 
+    font-mono
+  "
+        >
+          Ctrl + K
+        </kbd>
+      </button>
 
       {/* Command Dialog */}
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-     className="
-  bg-[#111827]
-  border border-white/10
+        className="
+bg-popover
+border border-border
+
   rounded-2xl
   shadow-[0_30px_80px_rgba(0,0,0,0.6)]
 "
-
       >
         <VisuallyHidden>
           <DialogTitle>Search</DialogTitle>
@@ -135,7 +147,6 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
         </div>
 
         <CommandList className="max-h-[380px] overflow-y-auto px-2 pb-3">
-
           <CommandEmpty className="py-8 text-center text-muted-foreground text-sm">
             No results found.
           </CommandEmpty>
@@ -173,9 +184,7 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
                       {icon || getIcon(type)}
                     </div>
 
-                    <span className="text-sm text-foreground">
-                      {name}
-                    </span>
+                    <span className="text-sm text-foreground">{name}</span>
                   </CommandItem>
                 ))}
               </CommandGroup>

@@ -25,12 +25,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          openSans.className,
-          "bg-[#0b0f17] text-zinc-200 antialiased"
-        )}
-      >
+   <body
+  className={cn(
+    openSans.className,
+    "antialiased"
+  )}
+>
         <ClerkProvider>
           <ThemeProvider
             attribute="class"

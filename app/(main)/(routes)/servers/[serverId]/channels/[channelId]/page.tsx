@@ -45,7 +45,7 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
     <div className="flex h-full">
 
       {/* ================= MAIN CHAT AREA ================= */}
-      <div className="flex flex-col flex-1 min-w-0 bg-gradient-to-b from-zinc-50 via-white to-zinc-100 dark:from-zinc-900 dark:via-zinc-950 dark:to-black">
+      <div className="flex flex-col flex-1 min-w-0 bg-background">
 
         <ChatHeader
           name={channel.name}
@@ -92,59 +92,40 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
       </div>
 
       {/* ================= RIGHT SIDE PANEL ================= */}
-      <div className="hidden xl:flex w-[320px] border-l border-white/10 bg-zinc-950/70 backdrop-blur-xl">
+  {/* ================= RIGHT SIDE PANEL ================= */}
+<div className="hidden xl:flex w-[320px] border-l border-border bg-card">
+  <div className="flex flex-col w-full h-full p-4 gap-4">
 
-        <div className="flex flex-col w-full h-full p-4 gap-4">
+    {/* -------- AI ASSISTANT -------- */}
+    <div className="flex-1">
+      <AIAssistant />
+    </div>
 
-          {/* -------- AI ASSISTANT -------- */}
-          <div className="flex-1 rounded-xl border border-white/10 bg-zinc-900/60 hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
-
-            <div className="p-4 border-b border-white/5">
-              <h2 className="text-sm font-semibold text-white">
-                AI Assistant
-              </h2>
-            </div>
-
-            <div className="p-4 h-[350px] overflow-hidden">
-              <AIAssistant />
-            </div>
-
-          </div>
-
-          {/* -------- GAMES -------- */}
-          <div className="flex-1 rounded-xl border border-white/10 bg-zinc-900/60 hover:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
-
-            <div className="flex items-center gap-3 p-4 border-b border-white/5">
-              <Gamepad2 className="w-5 h-5 text-purple-400" />
-              <h2 className="text-sm font-semibold text-white">
-                Games
-              </h2>
-            </div>
-
-            <div className="p-4 text-sm text-zinc-400">
-              Multiplayer mini games coming soon...
-            </div>
-
-          </div>
-
-          {/* -------- ACTIVITY -------- */}
-          <div className="h-[130px] rounded-xl border border-white/10 bg-zinc-900/60 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300">
-
-            <div className="flex items-center gap-3 p-4 border-b border-white/5">
-              <Activity className="w-5 h-5 text-emerald-400" />
-              <h2 className="text-sm font-semibold text-white">
-                Activity
-              </h2>
-            </div>
-
-            <div className="p-4 text-xs text-zinc-400">
-              Live user activity & analytics
-            </div>
-
-          </div>
-
-        </div>
+    {/* -------- GAMES -------- */}
+    <div className="rounded-xl border border-border bg-background hover:shadow-md transition">
+      <div className="flex items-center gap-3 p-4 border-b border-border">
+        <Gamepad2 className="w-5 h-5 text-purple-500" />
+        <h2 className="text-sm font-semibold text-foreground">Games</h2>
       </div>
+      <div className="p-4 text-sm text-muted-foreground">
+        Multiplayer mini games coming soon...
+      </div>
+    </div>
+
+    {/* -------- ACTIVITY -------- */}
+    <div className="rounded-xl border border-border bg-background hover:shadow-md transition">
+      <div className="flex items-center gap-3 p-4 border-b border-border">
+        <Activity className="w-5 h-5 text-emerald-500" />
+        <h2 className="text-sm font-semibold text-foreground">Activity</h2>
+      </div>
+      <div className="p-4 text-xs text-muted-foreground">
+        Live user activity & analytics
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
     </div>
   );

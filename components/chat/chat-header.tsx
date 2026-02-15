@@ -19,17 +19,13 @@ export const ChatHeader = ({
 }: ChatHeaderProps) => {
   return (
     <div
-      className="
-        flex items-center
-        h-16
-        px-8
-        bg-gradient-to-b
-       from-zinc-900/70
-via-zinc-900/50
-        to-transparent
-        backdrop-blur-md
-        border-b border-white/10
-      "
+    className="
+  flex items-center
+  h-16
+  px-8
+  bg-card
+  border-b border-border
+"
     >
       {/* LEFT */}
       <div className="flex items-center gap-3">
@@ -41,7 +37,8 @@ via-zinc-900/50
           <UserAvatar src={imageUrl} className="h-9 w-9 rounded-full" />
         )}
 
-        <p className="font-semibold text-lg tracking-tight text-white">
+        <p className="font-semibold text-lg tracking-tight text-foreground">
+
           {name}
         </p>
       </div>

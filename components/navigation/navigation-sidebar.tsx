@@ -33,7 +33,7 @@ return (
       h-full
       w-[72px]
       py-4
-      bg-[#0b0d12]
+      bg-background
       border-r border-white/5
       shadow-xl
     "

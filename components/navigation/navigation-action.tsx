@@ -18,7 +18,7 @@ export const NavigationAction = () => {
             h-12 w-12
             flex items-center justify-center
             rounded-full
-            bg-[#1a1d24]
+            bg-muted
             transition-all duration-200 ease-out
             shadow-md
             group-hover:rounded-2xl

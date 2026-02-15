@@ -107,10 +107,8 @@ export function ChatMessages({
         py-10
         overflow-y-auto
         scroll-smooth
-        bg-gradient-to-b
-        from-zinc-900/30
-        via-zinc-900/50
-        to-zinc-950
+        bg-background
+
       "
     >
       {!hasNextPage && <div className="flex-1" />}

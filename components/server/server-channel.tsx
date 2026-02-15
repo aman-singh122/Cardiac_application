@@ -45,16 +45,16 @@ export const ServerChannel = ({
       onClick={onClick}
       className={cn(
         "group relative flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 text-left",
-        "hover:bg-[#1a2233]",
-        isActive && "bg-[#1f2937]"
+        "hover:bg-muted",
+        isActive && "bg-accent"
       )}
     >
       {/* Icon */}
       <Icon
         className={cn(
           "w-4 h-4 shrink-0 transition-colors",
-          "text-zinc-500 group-hover:text-zinc-300",
-          isActive && "text-white"
+          "text-muted-foreground group-hover:text-foreground",
+          isActive && "text-foreground"
         )}
       />
 
@@ -62,8 +62,8 @@ export const ServerChannel = ({
       <span
         className={cn(
           "text-sm font-medium truncate transition-colors",
-          "text-zinc-400 group-hover:text-zinc-200",
-          isActive && "text-white"
+          "text-muted-foreground group-hover:text-foreground",
+          isActive && "text-foreground"
         )}
       >
         {channel.name}
@@ -74,14 +74,14 @@ export const ServerChannel = ({
         <div className="ml-auto flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <ActionTooltip label="Edit">
             <Edit
-              className="w-4 h-4 text-zinc-500 hover:text-white transition cursor-pointer"
+              className="w-4 h-4 text-muted-foreground hover:text-foreground transition cursor-pointer"
               onClick={(e) => onAction(e, "editChannel")}
             />
           </ActionTooltip>
 
           <ActionTooltip label="Delete">
             <Trash
-              className="w-4 h-4 text-zinc-500 hover:text-rose-500 transition cursor-pointer"
+              className="w-4 h-4 text-muted-foreground hover:text-destructive transition cursor-pointer"
               onClick={(e) => onAction(e, "deleteChannel")}
             />
           </ActionTooltip>
@@ -90,7 +90,7 @@ export const ServerChannel = ({
 
       {/* Lock */}
       {channel.name === "general" && (
-        <Lock className="ml-auto w-4 h-4 text-zinc-500" />
+        <Lock className="ml-auto w-4 h-4 text-muted-foreground" />
       )}
     </button>
   );

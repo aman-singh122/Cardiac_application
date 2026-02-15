@@ -34,37 +34,38 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-     <button
+  <button
   className="
     w-full
     flex items-center justify-between
     px-4 py-3
     rounded-lg
-    bg-[#151c2b]
-    hover:bg-[#1c2436]
+    bg-card
+    hover:bg-muted
     transition-all duration-200
-    border border-white/5
+    border border-border
   "
 >
-  <span className="text-sm font-semibold tracking-wide text-zinc-200 truncate">
+  <span className="text-sm font-semibold tracking-wide text-foreground truncate">
     {server.name}
   </span>
-  <ChevronDown className="h-4 w-4 text-zinc-400" />
+  <ChevronDown className="h-4 w-4 text-muted-foreground" />
 </button>
+
 
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-className="
-  w-56
-  bg-[#111827]
-  border border-white/5
-  text-zinc-200
-  shadow-2xl
-  rounded-xl
-"
+<DropdownMenuContent
+  className="
+    w-56
+    bg-popover
+    border border-border
+    text-popover-foreground
+    shadow-xl
+    rounded-xl
+  "
+>
 
-      >
         {isModerator && (
           <DropdownMenuItem
             onSelect={() => onOpen("invite", { server })}
