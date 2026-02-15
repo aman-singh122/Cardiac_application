@@ -130,3 +130,13 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+
+/* All clickable elements */
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"] {
+  cursor: pointer;
+}
