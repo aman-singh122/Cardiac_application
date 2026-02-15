@@ -7,7 +7,6 @@ import { db } from "@/lib/db";
 const MESSAGES_BATCH = 30;
 console.log("Here is the batch mesaage /api/message/route.ts");
 
-
 export async function GET(req: Request) {
   try {
     const profile = await currentProfile();
@@ -28,19 +27,19 @@ export async function GET(req: Request) {
         take: MESSAGES_BATCH,
         skip: 1,
         cursor: {
-          id: cursor
+          id: cursor,
         },
         where: {
-          channelId
+          channelId,
         },
         include: {
           member: {
             include: {
-              profile: true
-            }
-          }
+              profile: true,
+            },
+          },
         },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: "desc" },
       });
     } else {
       messages = await db.message.findMany({
@@ -49,11 +48,11 @@ export async function GET(req: Request) {
         include: {
           member: {
             include: {
-              profile: true
-            }
-          }
+              profile: true,
+            },
+          },
         },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: "desc" },
       });
     }
 
@@ -102,11 +101,12 @@ export async function POST(req: Request) {
 
     const message = await db.message.create({
       data: {
-        content: content || "",
+        content: fileUrl ? "" : content || "",
         channelId,
         memberId: member.id,
-        fileUrl: fileUrl || null, // ⭐ IMPORTANT
+        fileUrl: fileUrl || null,
       },
+
       include: {
         member: {
           include: {
@@ -122,5 +122,3 @@ export async function POST(req: Request) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
-
-

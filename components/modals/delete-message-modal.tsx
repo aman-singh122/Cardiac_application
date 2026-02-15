@@ -14,8 +14,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import qs from "query-string";
-
 
 export const DeleteMessageModal = () => {
   const { isOpen, onClose, type, data } = useModal();
@@ -24,27 +22,28 @@ export const DeleteMessageModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isModalOpen = isOpen && type === "deleteMessage";
-  const { apiUrl, query } = data;
+const { apiUrl } = data;
 
-  const onClick = async () => {
-    try {
-      setIsLoading(true);
+const onClick = async () => {
+  try {
+    setIsLoading(true);
 
-      const url = qs.stringifyUrl({
-        url: apiUrl!,
-        query,
-      });
+    if (!data?.apiUrl) return;
 
-      await axios.delete(url);
+    await axios.delete(data.apiUrl);
 
-      onClose();
-      router.refresh();
-    } catch (error) {
-      console.error("Failed to delete message:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    onClose();
+    router.refresh();
+  } catch (error) {
+    console.error("Failed to delete message:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
+
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>

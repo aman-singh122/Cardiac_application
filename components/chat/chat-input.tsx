@@ -47,25 +47,28 @@ export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const url = qs.stringifyUrl({
-        url: apiUrl,
-        query,
-      });
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  try {
+    if (!values.content && !fileUrl) return; // nothing to send
 
-      await axios.post(url, {
-        content: values.content || "",
-        fileUrl,
-      });
+    const url = qs.stringifyUrl({
+      url: apiUrl,
+      query,
+    });
 
-      form.reset();
-      setFileUrl(null);
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    await axios.post(url, {
+      content: fileUrl ? "" : values.content,
+      fileUrl: fileUrl || null,
+    });
+
+    form.reset();
+    setFileUrl(null);
+    router.refresh();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="px-6 py-6 bg-gradient-to-t from-black/40 via-black/20 to-transparent">
